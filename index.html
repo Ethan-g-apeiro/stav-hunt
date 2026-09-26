@@ -1,147 +1,405 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>...</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
+<title>...</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
     html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: black;
-      font-family: Consolas, Monaco, monospace;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #000;
     }
 
+    /* Actual wrong website */
     iframe {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        z-index: 1;
     }
 
-    #dialog {
-      position: fixed;
-      left: 25px;
-      bottom: 25px;
-
-      max-width: 600px;
-
-      background: rgba(0, 0, 0, 0.88);
-      color: #fff;
-
-      padding: 16px 20px;
-      border-radius: 10px;
-
-      font-size: 18px;
-      line-height: 1.4;
-
-      box-shadow: 0 0 25px rgba(0,0,0,0.5);
-
-      opacity: 0;
-      transform: translateY(10px);
-
-      transition:
-        opacity 0.25s ease,
-        transform 0.25s ease;
-
-      z-index: 1000;
+    /* Slight dark overlay while we're talking */
+    #shade {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.38);
+        z-index: 5;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
     }
 
-    #dialog.show {
-      opacity: 1;
-      transform: translateY(0);
+    /* Main dialogue area */
+    #dialogue-wrapper {
+        position: fixed;
+        left: 50%;
+        bottom: 5vh;
+        transform: translateX(-50%);
+        width: min(900px, 92vw);
+        z-index: 10;
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease;
     }
 
-    #dialog.hide {
-      opacity: 0;
-      transform: translateY(10px);
+    #dialogue-wrapper.hidden {
+        opacity: 0;
+        transform: translate(-50%, 30px);
+        pointer-events: none;
     }
 
+    #speaker {
+        display: inline-block;
+        background: #111;
+        color: white;
+        font-size: clamp(16px, 2vw, 23px);
+        font-weight: bold;
+        padding: 8px 18px;
+        border-radius: 12px 12px 0 0;
+        margin-left: 20px;
+    }
+
+    #dialogue {
+        position: relative;
+        width: 100%;
+        min-height: 150px;
+
+        background: rgba(15, 15, 15, 0.96);
+        color: white;
+
+        border: 3px solid white;
+        border-radius: 22px;
+
+        padding: 28px 32px 48px;
+
+        font-size: clamp(24px, 4vw, 42px);
+        line-height: 1.25;
+
+        box-shadow:
+            0 10px 50px rgba(0,0,0,0.65);
+
+        cursor: pointer;
+        user-select: none;
+    }
+
+    #text {
+        min-height: 1.4em;
+    }
+
+    #continue {
+        position: absolute;
+        right: 22px;
+        bottom: 12px;
+        font-size: 17px;
+        opacity: 0.55;
+    }
+
+    /* Choices */
+    #choices {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+
+        display: none;
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(0,0,0,0.45);
+    }
+
+    #choices.show {
+        display: flex;
+    }
+
+    #choiceBox {
+        width: min(650px, 90vw);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .choice {
+        width: 100%;
+        padding: 22px 28px;
+
+        border: 3px solid white;
+        border-radius: 16px;
+
+        background: rgba(15,15,15,0.96);
+        color: white;
+
+        font-size: clamp(21px, 3vw, 30px);
+        text-align: left;
+
+        cursor: pointer;
+
+        transition:
+            transform 0.12s ease,
+            background 0.12s ease;
+    }
+
+    .choice:hover {
+        background: #292929;
+        transform: scale(1.015);
+    }
+
+    /* Full fade before CyberChef */
     #fade {
-      position: fixed;
-      inset: 0;
-      background: black;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.8s ease;
-      z-index: 999;
+        position: fixed;
+        inset: 0;
+        background: black;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 100;
+
+        transition: opacity 1s ease;
     }
 
     #fade.active {
-      opacity: 1;
+        opacity: 1;
     }
-  </style>
+
+    /* Mobile */
+    @media (max-width: 600px) {
+        #dialogue-wrapper {
+            bottom: 4vh;
+            width: 94vw;
+        }
+
+        #dialogue {
+            min-height: 180px;
+            padding: 25px 23px 48px;
+        }
+    }
+</style>
 </head>
 
 <body>
 
-  <iframe src="https://metoki-solutions.com"></iframe>
+<iframe src="https://metoki-solutions.com"></iframe>
 
-  <div id="fade"></div>
-  <div id="dialog"></div>
+<div id="shade"></div>
 
-  <script>
-    const dialog = document.getElementById("dialog");
-    const fade = document.getElementById("fade");
+<div id="dialogue-wrapper" class="hidden">
+    <div id="speaker">Ethan</div>
 
-    const messages = [
-      { text: "oh fuck what did i open", duration: 1700 },
-      { text: "wait", duration: 1000 },
-      { text: "shit this isn't right", duration: 1700 },
-      { text: "he doesn't even work here anymore 💀", duration: 2200 },
-      { text: "...", duration: 1100 },
-      { text: "damn he updated his site though", duration: 1900 },
-      { text: "this looks clean af", duration: 1800 },
-      { text: "anyway", duration: 1100 },
-      { text: "i think this one will do you better", duration: 2200 },
-      { text: "hold on...", duration: 1500 }
-    ];
+    <div id="dialogue">
+        <div id="text"></div>
+        <div id="continue">click to continue ▶</div>
+    </div>
+</div>
 
-    const cyberChef =
-      "https://gchq.github.io/CyberChef/#recipe=From_Hex('Auto')XOR({'option':'UTF8','string':''},'Standard',false)&ieol=CRLF";
+<div id="choices">
+    <div id="choiceBox"></div>
+</div>
 
-    function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
+<div id="fade"></div>
+
+<script>
+const wrapper = document.getElementById("dialogue-wrapper");
+const dialogue = document.getElementById("dialogue");
+const speaker = document.getElementById("speaker");
+const text = document.getElementById("text");
+const continueText = document.getElementById("continue");
+
+const choices = document.getElementById("choices");
+const choiceBox = document.getElementById("choiceBox");
+
+const shade = document.getElementById("shade");
+const fade = document.getElementById("fade");
+
+const cyberChef =
+    "https://gchq.github.io/CyberChef/#recipe=From_Hex('Auto')XOR({'option':'UTF8','string':''},'Standard',false)&ieol=CRLF";
+
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+/* Gives the text a little typing effect */
+async function typeText(message) {
+    text.textContent = "";
+
+    for (let i = 0; i < message.length; i++) {
+        text.textContent += message[i];
+
+        let delay = 28;
+
+        if (message[i] === ".") delay = 130;
+        if (message[i] === "?") delay = 100;
+
+        await sleep(delay);
     }
+}
 
-    async function showMessage(message, duration) {
-      dialog.classList.remove("hide");
-      dialog.textContent = message;
 
-      await sleep(50);
-      dialog.classList.add("show");
+/* Wait for click/tap */
+function waitForClick() {
+    return new Promise(resolve => {
 
-      await sleep(duration);
+        const handler = () => {
+            dialogue.removeEventListener("click", handler);
+            resolve();
+        };
 
-      dialog.classList.remove("show");
-      dialog.classList.add("hide");
+        dialogue.addEventListener("click", handler);
+    });
+}
 
-      await sleep(300);
-    }
 
-    async function run() {
+async function say(message, name = "Ethan") {
+    speaker.textContent = name;
 
-      // Let him stare at Metoki for a second before anything happens.
-      await sleep(1600);
+    wrapper.classList.remove("hidden");
 
-      for (const message of messages) {
-        await showMessage(message.text, message.duration);
-      }
+    continueText.style.display = "none";
 
-      // Dramatic little transition.
-      fade.classList.add("active");
+    await typeText(message);
 
-      await sleep(900);
+    continueText.style.display = "block";
 
-      window.location.replace(cyberChef);
-    }
+    await waitForClick();
+}
 
-    run();
-  </script>
+
+async function playerChoice(options) {
+
+    wrapper.classList.add("hidden");
+
+    await sleep(250);
+
+    choiceBox.innerHTML = "";
+
+    return new Promise(resolve => {
+
+        options.forEach(option => {
+
+            const button = document.createElement("button");
+
+            button.className = "choice";
+            button.textContent = option.text;
+
+            button.onclick = () => {
+
+                choices.classList.remove("show");
+
+                resolve(option.value);
+            };
+
+            choiceBox.appendChild(button);
+        });
+
+        choices.classList.add("show");
+    });
+}
+
+
+async function run() {
+
+    /*
+       Give him time to actually register
+       that Metoki has inexplicably opened.
+    */
+    await sleep(1700);
+
+    await say("oh fuck");
+
+    await say("wait");
+
+    await say("what the fuck did i open");
+
+    await say("shit this isn't right");
+
+
+    await playerChoice([
+        {
+            text: "you sent me here",
+            value: 1
+        }
+    ]);
+
+
+    await say("did i?");
+
+    await say("...");
+
+    await say("oh");
+
+    await say("yeah that's on me");
+
+    await say("he doesn't even work here anymore 💀");
+
+    await say("wait though");
+
+    await say("damn he updated his site");
+
+    await say("this looks clean af");
+
+
+    /*
+       Remove everything and make Stav
+       actually stare at Metoki's site.
+    */
+    wrapper.classList.add("hidden");
+    shade.style.opacity = "0";
+
+    await sleep(2800);
+
+
+    shade.style.opacity = "1";
+
+    await sleep(400);
+
+    await say("anyway");
+
+    await say("you probably want the actual clue");
+
+
+    await playerChoice([
+        {
+            text: "that would be nice",
+            value: 1
+        }
+    ]);
+
+
+    await say("alright cyber boy");
+
+    await say("this one should be more your speed");
+
+    await say("try not to embarrass yourself");
+
+
+    wrapper.classList.add("hidden");
+
+    await sleep(350);
+
+    fade.classList.add("active");
+
+    await sleep(1300);
+
+    window.location.replace(cyberChef);
+}
+
+
+/*
+   Start.
+*/
+run();
+
+</script>
 
 </body>
 </html>
