@@ -1,23 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>...</title>
 
-<title>...</title>
-
-<style>
-    * {
-        box-sizing: border-box;
-    }
+  <style>
+    * { box-sizing: border-box; }
 
     html, body {
-        margin: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        background: #000;
-        font-family: Consolas, Monaco, "Courier New", monospace;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: Consolas, Monaco, "Courier New", monospace;
     }
 
     /* =========================
@@ -25,1364 +22,531 @@
        ========================= */
 
     #site {
-        position: fixed;
-        inset: 0;
-
-        width: 100%;
-        height: 100%;
-
-        border: 0;
-
-        z-index: 1;
-
-        background: white;
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      z-index: 1;
+      background: white;
     }
-
 
     /* =========================
        DARKEN WEBSITE WHILE TALKING
        ========================= */
 
     #shade {
-        position: fixed;
-        inset: 0;
-
-        background: rgba(0, 0, 0, 0.38);
-
-        z-index: 5;
-
-        pointer-events: none;
-
-        transition: opacity 0.4s ease;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.38);
+      z-index: 5;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
     }
-
 
     /* =========================
        DIALOGUE
        ========================= */
 
     #dialogueWrapper {
-        position: fixed;
-
-        left: 50%;
-        bottom: 5vh;
-
-        transform: translateX(-50%);
-
-        width: min(950px, 92vw);
-
-        z-index: 20;
-
-        transition:
-            opacity 0.25s ease,
-            transform 0.25s ease;
+      position: fixed;
+      left: 50%;
+      bottom: 5vh;
+      transform: translateX(-50%);
+      width: min(950px, 92vw);
+      z-index: 20;
+      transition: opacity 0.25s ease, transform 0.25s ease;
     }
 
     #dialogueWrapper.hidden {
-        opacity: 0;
-        transform: translate(-50%, 25px);
-        pointer-events: none;
+      opacity: 0;
+      transform: translate(-50%, 25px);
+      pointer-events: none;
     }
-
 
     #speaker {
-        display: inline-block;
-
-        margin-left: 22px;
-
-        padding: 9px 18px;
-
-        background: #111;
-        color: white;
-
-        border:
-            3px solid white;
-
-        border-bottom: 0;
-
-        border-radius: 12px 12px 0 0;
-
-        font-size: clamp(15px, 2vw, 21px);
-        font-weight: bold;
-
-        letter-spacing: 1px;
+      display: inline-block;
+      margin-left: 22px;
+      padding: 9px 18px;
+      background: #111;
+      color: white;
+      border: 3px solid white;
+      border-bottom: 0;
+      border-radius: 12px 12px 0 0;
+      font-size: clamp(15px, 2vw, 21px);
+      font-weight: bold;
+      letter-spacing: 1px;
     }
-
 
     #dialogue {
-        position: relative;
-
-        min-height: 180px;
-
-        padding:
-            30px
-            34px
-            55px;
-
-        background:
-            rgba(10, 10, 10, 0.96);
-
-        color: white;
-
-        border:
-            4px solid white;
-
-        border-radius:
-            18px;
-
-        box-shadow:
-            0 12px 45px rgba(0,0,0,0.7);
-
-        cursor: pointer;
-
-        user-select: none;
+      position: relative;
+      min-height: 180px;
+      padding: 30px 34px 55px;
+      background: rgba(10, 10, 10, 0.96);
+      color: white;
+      border: 4px solid white;
+      border-radius: 18px;
+      box-shadow: 0 12px 45px rgba(0, 0, 0, 0.7);
+      cursor: pointer;
+      user-select: none;
     }
-
 
     #text {
-        font-size:
-            clamp(25px, 4vw, 44px);
-
-        line-height: 1.25;
-
-        white-space:
-            pre-wrap;
+      font-size: clamp(25px, 4vw, 44px);
+      line-height: 1.25;
+      white-space: pre-wrap;
     }
-
 
     #continue {
-        position: absolute;
-
-        right: 23px;
-        bottom: 14px;
-
-        font-size:
-            clamp(13px, 1.5vw, 17px);
-
-        opacity: 0.55;
-
-        animation:
-            blink 1s infinite;
+      position: absolute;
+      right: 23px;
+      bottom: 14px;
+      font-size: clamp(13px, 1.5vw, 17px);
+      opacity: 0.55;
+      animation: blink 1s infinite;
     }
-
 
     @keyframes blink {
-
-        0%,
-        100% {
-            opacity: 0.35;
-        }
-
-        50% {
-            opacity: 0.8;
-        }
+      0%, 100% { opacity: 0.35; }
+      50% { opacity: 0.8; }
     }
-
 
     /* =========================
        PLAYER CHOICES
        ========================= */
 
     #choices {
-        position: fixed;
-
-        inset: 0;
-
-        z-index: 50;
-
-        display: none;
-
-        align-items: center;
-        justify-content: center;
-
-        padding: 20px;
-
-        background:
-            rgba(0, 0, 0, 0.48);
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.48);
     }
 
-
-    #choices.show {
-        display: flex;
-    }
-
+    #choices.show { display: flex; }
 
     #choiceBox {
-        width:
-            min(720px, 92vw);
-
-        display: flex;
-        flex-direction: column;
-
-        gap: 20px;
+      width: min(720px, 92vw);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
-
 
     .choice {
-        width: 100%;
-
-        padding:
-            23px
-            30px;
-
-        background:
-            #111;
-
-        color:
-            white;
-
-        border:
-            4px solid white;
-
-        border-radius:
-            10px;
-
-        font-family:
-            Consolas,
-            Monaco,
-            "Courier New",
-            monospace;
-
-        font-size:
-            clamp(21px, 3vw, 30px);
-
-        font-weight:
-            bold;
-
-        text-align:
-            left;
-
-        cursor:
-            pointer;
-
-        box-shadow:
-            0 8px 0 white,
-            0 14px 30px rgba(0,0,0,0.5);
-
-        transform:
-            translateY(0);
-
-        transition:
-            transform 0.07s ease,
-            box-shadow 0.07s ease,
-            background 0.08s ease;
+      width: 100%;
+      padding: 23px 30px;
+      background: #111;
+      color: white;
+      border: 4px solid white;
+      border-radius: 10px;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: clamp(21px, 3vw, 30px);
+      font-weight: bold;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 8px 0 white, 0 14px 30px rgba(0, 0, 0, 0.5);
+      transform: translateY(0);
+      transition: transform 0.07s ease, box-shadow 0.07s ease, background 0.08s ease;
     }
 
-
-    .choice:hover {
-        background:
-            #242424;
-    }
-
+    .choice:hover { background: #242424; }
 
     .choice:active {
-        transform:
-            translateY(8px);
-
-        box-shadow:
-            0 0 0 white,
-            0 5px 12px rgba(0,0,0,0.5);
+      transform: translateY(8px);
+      box-shadow: 0 0 0 white, 0 5px 12px rgba(0, 0, 0, 0.5);
     }
-
 
     /* =========================
-       FADE TO CYBERCHEF
-       ========================= */
-
-    #fade {
-        position: fixed;
-
-        inset: 0;
-
-        z-index: 100;
-
-        background:
-            black;
-
-        opacity:
-            0;
-
-        pointer-events:
-            none;
-
-        transition:
-            opacity 1.1s ease;
-    }
-
-
-    #fade.active {
-        opacity:
-            1;
-    }
-
-
-    /* =========================
-       LITTLE CENTER MESSAGE
+       CENTER MESSAGE / FADE
        ========================= */
 
     #centerMessage {
-        position: fixed;
-
-        inset: 0;
-
-        z-index: 80;
-
-        display: none;
-
-        align-items: center;
-        justify-content: center;
-
-        color: white;
-
-        font-size:
-            clamp(28px, 6vw, 65px);
-
-        font-weight: bold;
-
-        text-align: center;
-
-        padding: 30px;
-
-        background:
-            rgba(0,0,0,0.9);
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: clamp(28px, 6vw, 65px);
+      font-weight: bold;
+      text-align: center;
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.9);
     }
 
+    #centerMessage.show { display: flex; }
 
-    #centerMessage.show {
-        display: flex;
+    #fade {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: black;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1.1s ease;
     }
 
-
-    /* =========================
-       MOBILE
-       ========================= */
+    #fade.active { opacity: 1; }
 
     @media (max-width: 600px) {
+      #dialogueWrapper {
+        width: 94vw;
+        bottom: 3vh;
+      }
 
-        #dialogueWrapper {
-            width: 94vw;
-            bottom: 3vh;
-        }
+      #dialogue {
+        min-height: 190px;
+        padding: 25px 22px 50px;
+      }
 
-        #dialogue {
-            min-height: 190px;
-
-            padding:
-                25px
-                22px
-                50px;
-        }
-
-        #speaker {
-            margin-left: 12px;
-        }
+      #speaker { margin-left: 12px; }
     }
-</style>
+  </style>
 </head>
 
-
 <body>
+  <iframe id="site" src="https://metoki-solutions.com"></iframe>
+  <div id="shade"></div>
 
-
-<!-- WRONG DESTINATION -->
-
-<iframe
-    id="site"
-    src="https://metoki-solutions.com">
-</iframe>
-
-
-<div id="shade"></div>
-
-
-<!-- DIALOGUE -->
-
-<div
-    id="dialogueWrapper"
-    class="hidden">
-
-    <div id="speaker">
-        EXTRACTOR
-    </div>
-
+  <div id="dialogueWrapper" class="hidden">
+    <div id="speaker">EXTRACTOR</div>
     <div id="dialogue">
-
-        <div id="text"></div>
-
-        <div id="continue">
-            click to continue ▶
-        </div>
-
+      <div id="text"></div>
+      <div id="continue">click to continue ▶</div>
     </div>
+  </div>
 
-</div>
-
-
-<!-- CHOICES -->
-
-<div id="choices">
-
+  <div id="choices">
     <div id="choiceBox"></div>
+  </div>
 
-</div>
+  <div id="centerMessage"></div>
+  <div id="fade"></div>
 
+  <script>
+    const wrapper = document.getElementById("dialogueWrapper");
+    const dialogue = document.getElementById("dialogue");
+    const speaker = document.getElementById("speaker");
+    const text = document.getElementById("text");
+    const continueText = document.getElementById("continue");
+    const choices = document.getElementById("choices");
+    const choiceBox = document.getElementById("choiceBox");
+    const shade = document.getElementById("shade");
+    const fade = document.getElementById("fade");
+    const centerMessage = document.getElementById("centerMessage");
 
-<!-- OPTIONAL BIG MESSAGE -->
+    const cyberChef =
+      "https://gchq.github.io/CyberChef/#recipe=From_Hex('Auto')XOR({'option':'UTF8','string':''},'Standard',false)&ieol=CRLF";
 
-<div id="centerMessage"></div>
-
-
-<!-- FINAL FADE -->
-
-<div id="fade"></div>
-
-
-
-<script>
-
-/* ==========================================================
-   ELEMENTS
-   ========================================================== */
-
-const wrapper =
-    document.getElementById("dialogueWrapper");
-
-const dialogue =
-    document.getElementById("dialogue");
-
-const speaker =
-    document.getElementById("speaker");
-
-const text =
-    document.getElementById("text");
-
-const continueText =
-    document.getElementById("continue");
-
-const choices =
-    document.getElementById("choices");
-
-const choiceBox =
-    document.getElementById("choiceBox");
-
-const shade =
-    document.getElementById("shade");
-
-const fade =
-    document.getElementById("fade");
-
-const centerMessage =
-    document.getElementById("centerMessage");
-
-
-/* ==========================================================
-   CYBERCHEF DESTINATION
-   ========================================================== */
-
-const cyberChef =
-    "https://gchq.github.io/CyberChef/#recipe=From_Hex('Auto')XOR({'option':'UTF8','string':''},'Standard',false)&ieol=CRLF";
-
-
-/* ==========================================================
-   BASIC HELPERS
-   ========================================================== */
-
-function sleep(ms) {
-
-    return new Promise(
-        resolve =>
-            setTimeout(resolve, ms)
-    );
-
-}
-
-
-/* ==========================================================
-   AUDIO
-   ========================================================== */
-
-let audioContext = null;
-
-
-function enableAudio() {
-
-    if (!audioContext) {
-
-        audioContext =
-            new (
-                window.AudioContext ||
-                window.webkitAudioContext
-            )();
-
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    /* =========================
+       AUDIO
+       ========================= */
 
-    if (
-        audioContext.state ===
-        "suspended"
-    ) {
+    let audioContext = null;
 
+    function enableAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      if (audioContext.state === "suspended") {
         audioContext.resume();
-
+      }
     }
 
-}
+    document.addEventListener("click", enableAudio);
+    document.addEventListener("touchstart", enableAudio);
 
+    function speechBeep(character) {
+      if (!audioContext || audioContext.state !== "running") return;
+      if ([" ", ".", ",", "?", "!"].includes(character)) return;
 
-/*
-   Browsers won't let us make sound until
-   the user interacts with the page once.
-*/
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      const pitch = 175 + Math.random() * 35;
 
-document.addEventListener(
-    "click",
-    enableAudio
-);
+      oscillator.type = "square";
+      oscillator.frequency.value = pitch;
 
-document.addEventListener(
-    "touchstart",
-    enableAudio
-);
-
-
-
-/* ==========================================================
-   EXTRACTOR TALK SOUND
-   ========================================================== */
-
-function speechBeep(character) {
-
-    if (
-        !audioContext ||
-        audioContext.state !== "running"
-    ) {
-        return;
-    }
-
-
-    if (
-        character === " " ||
-        character === "." ||
-        character === "," ||
-        character === "?" ||
-        character === "!"
-    ) {
-        return;
-    }
-
-
-    const oscillator =
-        audioContext.createOscillator();
-
-    const gain =
-        audioContext.createGain();
-
-
-    /*
-       Tiny pitch variation gives it
-       a fake "voice".
-    */
-
-    const pitch =
-        175 +
-        Math.random() * 35;
-
-
-    oscillator.type =
-        "square";
-
-    oscillator.frequency.value =
-        pitch;
-
-
-    gain.gain.setValueAtTime(
-        0.022,
-        audioContext.currentTime
-    );
-
-
-    gain.gain.exponentialRampToValueAtTime(
+      gain.gain.setValueAtTime(0.022, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(
         0.001,
         audioContext.currentTime + 0.035
-    );
+      );
 
-
-    oscillator.connect(gain);
-
-    gain.connect(
-        audioContext.destination
-    );
-
-
-    oscillator.start();
-
-
-    oscillator.stop(
-        audioContext.currentTime + 0.04
-    );
-
-}
-
-
-
-/* ==========================================================
-   CHOICE CLICK SOUND
-   ========================================================== */
-
-function choiceSound() {
-
-    if (
-        !audioContext ||
-        audioContext.state !== "running"
-    ) {
-        return;
+      oscillator.connect(gain);
+      gain.connect(audioContext.destination);
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.04);
     }
 
+    function choiceSound() {
+      if (!audioContext || audioContext.state !== "running") return;
 
-    const oscillator =
-        audioContext.createOscillator();
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
 
-    const gain =
-        audioContext.createGain();
-
-
-    oscillator.type =
-        "square";
-
-
-    oscillator.frequency.setValueAtTime(
-        150,
-        audioContext.currentTime
-    );
-
-
-    oscillator.frequency.exponentialRampToValueAtTime(
+      oscillator.type = "square";
+      oscillator.frequency.setValueAtTime(150, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(
         75,
         audioContext.currentTime + 0.11
-    );
+      );
 
-
-    gain.gain.setValueAtTime(
-        0.07,
-        audioContext.currentTime
-    );
-
-
-    gain.gain.exponentialRampToValueAtTime(
+      gain.gain.setValueAtTime(0.07, audioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(
         0.001,
         audioContext.currentTime + 0.12
-    );
+      );
 
-
-    oscillator.connect(gain);
-
-    gain.connect(
-        audioContext.destination
-    );
-
-
-    oscillator.start();
-
-
-    oscillator.stop(
-        audioContext.currentTime + 0.13
-    );
-
-}
-
-
-
-/* ==========================================================
-   TYPEWRITER
-   ========================================================== */
-
-async function typeText(message) {
-
-    text.textContent = "";
-
-
-    for (
-        let i = 0;
-        i < message.length;
-        i++
-    ) {
-
-        const char =
-            message[i];
-
-
-        text.textContent +=
-            char;
-
-
-        /*
-           Every second character.
-           Otherwise it gets VERY annoying.
-        */
-
-        if (
-            i % 2 === 0
-        ) {
-
-            speechBeep(char);
-
-        }
-
-
-        let delay =
-            29;
-
-
-        if (
-            char === "."
-        ) {
-            delay = 150;
-        }
-
-
-        if (
-            char === ","
-        ) {
-            delay = 75;
-        }
-
-
-        if (
-            char === "?"
-        ) {
-            delay = 170;
-        }
-
-
-        if (
-            char === "!"
-        ) {
-            delay = 140;
-        }
-
-
-        await sleep(delay);
-
+      oscillator.connect(gain);
+      gain.connect(audioContext.destination);
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.13);
     }
 
-}
+    /* =========================
+       UI HELPERS
+       ========================= */
 
+    async function typeText(message) {
+      text.textContent = "";
 
+      for (let i = 0; i < message.length; i++) {
+        const char = message[i];
+        text.textContent += char;
 
-/* ==========================================================
-   WAIT FOR USER CLICK
-   ========================================================== */
-
-function waitForClick() {
-
-    return new Promise(
-        resolve => {
-
-            const handler =
-                () => {
-
-                    dialogue.removeEventListener(
-                        "click",
-                        handler
-                    );
-
-                    resolve();
-
-                };
-
-
-            dialogue.addEventListener(
-                "click",
-                handler
-            );
-
+        if (i % 2 === 0) {
+          speechBeep(char);
         }
-    );
 
-}
-
-
-
-/* ==========================================================
-   SAY
-   ========================================================== */
-
-async function say(
-    message,
-    name = "EXTRACTOR"
-) {
-
-    speaker.textContent =
-        name;
-
-
-    wrapper.classList.remove(
-        "hidden"
-    );
-
-
-    continueText.style.display =
-        "none";
-
-
-    await typeText(
-        message
-    );
-
-
-    continueText.style.display =
-        "block";
-
-
-    await waitForClick();
-
-}
-
-
-
-/* ==========================================================
-   PLAYER CHOICE
-   ========================================================== */
-
-async function playerChoice(
-    options
-) {
-
-    wrapper.classList.add(
-        "hidden"
-    );
-
-
-    await sleep(180);
-
-
-    choiceBox.innerHTML =
-        "";
-
-
-    return new Promise(
-        resolve => {
-
-            options.forEach(
-                option => {
-
-                    const button =
-                        document.createElement(
-                            "button"
-                        );
-
-
-                    button.className =
-                        "choice";
-
-
-                    button.textContent =
-                        "> " +
-                        option.text;
-
-
-                    button.onclick =
-                        async () => {
-
-                            enableAudio();
-
-                            choiceSound();
-
-                            /*
-                               Let the button visibly depress.
-                            */
-
-                            await sleep(90);
-
-
-                            choices.classList.remove(
-                                "show"
-                            );
-
-
-                            resolve(
-                                option.value
-                            );
-
-                        };
-
-
-                    choiceBox.appendChild(
-                        button
-                    );
-
-                }
-            );
-
-
-            choices.classList.add(
-                "show"
-            );
-
-        }
-    );
-
-}
-
-
-
-/* ==========================================================
-   BIG CENTER TEXT
-   ========================================================== */
-
-async function bigMessage(
-    message,
-    duration = 1600
-) {
-
-    centerMessage.textContent =
-        message;
-
-
-    centerMessage.classList.add(
-        "show"
-    );
-
-
-    await sleep(
-        duration
-    );
-
-
-    centerMessage.classList.remove(
-        "show"
-    );
-
-}
-
-
-
-/* ==========================================================
-   THE ACTUAL CONVERSATION
-   ========================================================== */
-
-async function run() {
-
-    /*
-       Let Stav actually notice
-       what website opened.
-    */
-
-    await sleep(2000);
-
-
-    await say(
-        "oh fuck"
-    );
-
-    await say(
-        "wait"
-    );
-
-    await say(
-        "what the fuck did i open"
-    );
-
-    await say(
-        "..."
-    );
-
-    await say(
-        "shit"
-    );
-
-    await say(
-        "this isn't right"
-    );
-
-
-    await playerChoice([
+        let delay = 29;
+        if (char === ".") delay = 150;
+        if (char === ",") delay = 75;
+        if (char === "?") delay = 170;
+        if (char === "!") delay = 140;
+
+        await sleep(delay);
+      }
+    }
+
+    function waitForClick() {
+      return new Promise(resolve => {
+        const handler = () => {
+          dialogue.removeEventListener("click", handler);
+          resolve();
+        };
+
+        dialogue.addEventListener("click", handler);
+      });
+    }
+
+    async function say(message, name = "EXTRACTOR") {
+      speaker.textContent = name;
+      wrapper.classList.remove("hidden");
+      continueText.style.display = "none";
+
+      await typeText(message);
+
+      continueText.style.display = "block";
+      await waitForClick();
+    }
+
+    async function playerChoice(options) {
+      wrapper.classList.add("hidden");
+      await sleep(180);
+
+      choiceBox.innerHTML = "";
+
+      return new Promise(resolve => {
+        options.forEach(option => {
+          const button = document.createElement("button");
+          button.className = "choice";
+          button.textContent = "> " + option.text;
+
+          button.onclick = async () => {
+            enableAudio();
+            choiceSound();
+            await sleep(90);
+            choices.classList.remove("show");
+            resolve(option.value);
+          };
+
+          choiceBox.appendChild(button);
+        });
+
+        choices.classList.add("show");
+      });
+    }
+
+    async function bigMessage(message, duration = 1600) {
+      centerMessage.textContent = message;
+      centerMessage.classList.add("show");
+      await sleep(duration);
+      centerMessage.classList.remove("show");
+    }
+
+    /* =========================
+       THE ACTUAL CONVERSATION
+       ========================= */
+
+    async function run() {
+      // Give Stav a moment to notice which site actually opened.
+      await sleep(2000);
+
+      await say("oh fuck");
+      await say("wait");
+      await say("what the fuck did i open");
+      await say("...");
+      await say("shit");
+      await say("this isn't right");
+
+      await playerChoice([
         {
-            text:
-                "you literally sent me here",
-            value:
-                1
+          text: "you literally sent me here",
+          value: 1
         }
-    ]);
+      ]);
 
+      await say("did i?");
+      await say("...");
+      await say("oh");
+      await say("yeah");
+      await say("that's on me");
+      await say("why did i send you here");
 
-    await say(
-        "did i?"
-    );
-
-    await say(
-        "..."
-    );
-
-    await say(
-        "oh"
-    );
-
-    await say(
-        "yeah"
-    );
-
-    await say(
-        "that's on me"
-    );
-
-    await say(
-        "why did i send you here"
-    );
-
-
-    await playerChoice([
+      await playerChoice([
         {
-            text:
-                "great question",
-            value:
-                1
+          text: "great question",
+          value: 1
         },
         {
-            text:
-                "i was hoping you knew",
-            value:
-                2
+          text: "i was hoping you knew",
+          value: 2
         }
-    ]);
+      ]);
 
+      await say("hold on");
+      await say("isn't this Metoki?");
 
-    await say(
-        "hold on"
-    );
-
-    await say(
-        "isn't this Metoki?"
-    );
-
-
-    await playerChoice([
+      await playerChoice([
         {
-            text:
-                "yes",
-            value:
-                1
+          text: "yes",
+          value: 1
         }
-    ]);
+      ]);
 
+      await say("OH");
+      await say("well there's the problem");
+      await say("you don't come to Metoki when you want things to work");
+      await say("you come to Metoki when you want to discover exciting new ways for them to not work");
+      await say("wrong department entirely");
+      await say("my bad");
+      await say("he doesn't even work here anymore either...");
+      await say("...");
+      await say("although");
+      await say("wait a second");
+      await say("damn");
+      await say("he updated the site");
+      await say("this actually looks clean af");
 
-    await say(
-        "OH"
-    );
+      // Let him appreciate the completely irrelevant website.
+      wrapper.classList.add("hidden");
+      shade.style.opacity = "0";
+      await sleep(3200);
+      shade.style.opacity = "1";
+      await sleep(350);
 
-    await say(
-        "well there's the problem"
-    );
+      /* =========================
+         CLEANER ENDING
+         ========================= */
 
-    await say(
-        "you don't come to Metoki when you want things to work"
-    );
+      await say("anyway");
+      await say("this is very much not the thing i meant to send you");
 
-    await say(
-        "you come to Metoki when you want to discover exciting new ways for them to not work"
-    );
-
-    await say(
-        "wrong department entirely"
-    );
-
-    await say(
-        "my bad"
-    );
-
-    await say(
-        "he doesn't even work here anymore either..."
-    );
-
-    await say(
-        "..."
-    );
-
-    await say(
-        "although"
-    );
-
-    await say(
-        "wait a second"
-    );
-
-    await say(
-        "damn"
-    );
-
-    await say(
-        "he updated the site"
-    );
-
-    await say(
-        "this actually looks clean af"
-    );
-
-
-    /*
-       Drop the UI and force him to
-       appreciate the completely irrelevant website.
-    */
-
-    wrapper.classList.add(
-        "hidden"
-    );
-
-    shade.style.opacity =
-        "0";
-
-    await sleep(
-        3200
-    );
-
-
-    shade.style.opacity =
-        "1";
-
-    await sleep(
-        350
-    );
-
-
-    await say(
-        "anyway"
-    );
-
-    await say(
-        "we have become distracted"
-    );
-
-    await say(
-        "you scanned that QR for a reason"
-    );
-
-
-    await playerChoice([
+      await playerChoice([
         {
-            text:
-                "yes. please continue.",
-            value:
-                1
+          text: "yeah i gathered that",
+          value: 1
         },
         {
-            text:
-                "i'm starting to regret this",
-            value:
-                2
+          text: "excellent routing",
+          value: 2
         }
-    ]);
+      ]);
 
+      await say("look");
+      await say("i was trying to get you a decoder");
+      await say("somewhere between that thought and the QR code we ended up at Metoki");
+      await say("which, honestly, tracks");
 
-    await say(
-        "right"
-    );
-
-    await say(
-        "you need the decoder"
-    );
-
-
-    await playerChoice([
+      await playerChoice([
         {
-            text:
-                "that would've been useful about 30 seconds ago",
-            value:
-                1
+          text: "can i have the actual decoder now?",
+          value: 1
         }
-    ]);
+      ]);
 
+      await say("yes");
+      await say("CyberChef");
+      await say("i already set up From Hex and XOR for you");
+      await say("because apparently we're easing you into cyber");
 
-    await say(
-        "yeah yeah"
-    );
-
-    await say(
-        "listen"
-    );
-
-    await say(
-        "i found you something more appropriate"
-    );
-
-    await say(
-        "you're the cyber guy now"
-    );
-
-
-    await playerChoice([
+      await playerChoice([
         {
-            text:
-                "i haven't even started yet",
-            value:
-                1
+          text: "i haven't even started the job yet",
+          value: 1
         }
-    ]);
+      ]);
 
+      await say("exactly");
+      await say("zero experience");
+      await say("first encrypted message");
+      await say("this is career development");
 
-    await say(
-        "details"
-    );
-
-    await say(
-        "you accepted the job"
-    );
-
-    await say(
-        "that sounds qualified enough to me"
-    );
-
-    await say(
-        "besides"
-    );
-
-    await say(
-        "you have to get the cyber experience from somewhere"
-    );
-
-    await say(
-        "might as well start with an escape treasure hunt"
-    );
-
-    await say(
-        "this one already has the decoding pipeline configured"
-    );
-
-    await say(
-        "From Hex."
-    );
-
-    await say(
-        "XOR."
-    );
-
-    await say(
-        "i even gave you the tools"
-    );
-
-
-    await playerChoice([
+      await playerChoice([
         {
-            text:
-                "you didn't give me the key",
-            value:
-                1
+          text: "you still haven't given me the key",
+          value: 1
         }
-    ]);
+      ]);
 
+      await say("correct");
+      await say("i gave you the ciphertext");
+      await say("i gave you the tool");
+      await say("if i give you the key too i'm just doing the hunt for you");
 
-    await say(
-        "correct"
-    );
-
-    await say(
-        "if i gave you that too this would just be onboarding"
-    );
-
-    await say(
-        "consider this your first cyber task"
-    );
-
-
-    await playerChoice([
+      await playerChoice([
         {
-            text:
-                "this is not how onboarding works",
-            value:
-                1
-        },
-        {
-            text:
-                "i'm going back to integration",
-            value:
-                2
+          text: "fine. open it.",
+          value: 1
         }
-    ]);
+      ]);
 
+      await say("there we go");
+      await say("already showing initiative");
+      await say("cyber will be very proud");
 
-    await say(
-        "too late"
-    );
+      wrapper.classList.add("hidden");
+      await sleep(300);
 
-    await say(
-        "integration already taught you how things fail"
-    );
+      await bigMessage("REDIRECTING...", 1100);
 
-    await say(
-        "now cyber can teach you why"
-    );
+      fade.classList.add("active");
+      await sleep(1000);
 
-    await say(
-        "good luck, future hacker man"
-    );
+      window.location.replace(cyberChef);
+    }
 
-
-    await playerChoice([
-        {
-            text:
-                "please just open the decoder",
-            value:
-                1
-        }
-    ]);
-
-
-    await say(
-        "finally"
-    );
-
-    await say(
-        "some initiative"
-    );
-
-    await say(
-        "maybe they'll keep you"
-    );
-
-    await say(
-        "try not to embarrass yourself"
-    );
-
-
-    wrapper.classList.add(
-        "hidden"
-    );
-
-    await sleep(
-        300
-    );
-
-
-    await bigMessage(
-        "REDIRECTING...",
-        1100
-    );
-
-
-    fade.classList.add(
-        "active"
-    );
-
-    await sleep(
-        1000
-    );
-
-
-    window.location.replace(
-        cyberChef
-    );
-
-}
-
-
-
-/* ==========================================================
-   GO
-   ========================================================== */
-
-run();
-
-</script>
-
-
+    run();
+  </script>
 </body>
 </html>
