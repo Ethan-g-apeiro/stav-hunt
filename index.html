@@ -2,34 +2,76 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Metoki Solutions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>...</title>
 
   <style>
-    html, body, iframe {
+    html, body {
       margin: 0;
       width: 100%;
       height: 100%;
-      border: 0;
       overflow: hidden;
+      background: black;
+      font-family: Consolas, Monaco, monospace;
     }
 
-    #loading {
+    iframe {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: monospace;
-      font-size: 22px;
-      z-index: 100;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .2s;
+      width: 100%;
+      height: 100%;
+      border: none;
     }
 
-    #loading.show {
+    #dialog {
+      position: fixed;
+      left: 25px;
+      bottom: 25px;
+
+      max-width: 600px;
+
+      background: rgba(0, 0, 0, 0.88);
+      color: #fff;
+
+      padding: 16px 20px;
+      border-radius: 10px;
+
+      font-size: 18px;
+      line-height: 1.4;
+
+      box-shadow: 0 0 25px rgba(0,0,0,0.5);
+
+      opacity: 0;
+      transform: translateY(10px);
+
+      transition:
+        opacity 0.25s ease,
+        transform 0.25s ease;
+
+      z-index: 1000;
+    }
+
+    #dialog.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #dialog.hide {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    #fade {
+      position: fixed;
+      inset: 0;
+      background: black;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+      z-index: 999;
+    }
+
+    #fade.active {
       opacity: 1;
     }
   </style>
@@ -37,24 +79,69 @@
 
 <body>
 
-<iframe src="https://metoki-solutions.com"></iframe>
+  <iframe src="https://metoki-solutions.com"></iframe>
 
-<div id="loading">
-  Oops, wrong site. Redirecting...
-</div>
+  <div id="fade"></div>
+  <div id="dialog"></div>
 
-<script>
-  setTimeout(() => {
-    document.getElementById("loading").classList.add("show");
+  <script>
+    const dialog = document.getElementById("dialog");
+    const fade = document.getElementById("fade");
 
-    setTimeout(() => {
-      window.location.replace(
-        "https://gchq.github.io/CyberChef/#recipe=From_Hex('Auto')XOR({'option':'UTF8','string':''},'Standard',false)&ieol=CRLF"
-      );
-    }, 1000);
+    const messages = [
+      { text: "oh fuck what did i open", duration: 1700 },
+      { text: "wait", duration: 1000 },
+      { text: "shit this isn't right", duration: 1700 },
+      { text: "he doesn't even work here anymore 💀", duration: 2200 },
+      { text: "...", duration: 1100 },
+      { text: "damn he updated his site though", duration: 1900 },
+      { text: "this looks clean af", duration: 1800 },
+      { text: "anyway", duration: 1100 },
+      { text: "i think this one will do you better", duration: 2200 },
+      { text: "hold on...", duration: 1500 }
+    ];
 
-  }, 2500);
-</script>
+    const cyberChef =
+      "https://gchq.github.io/CyberChef/#recipe=From_Hex('Auto')XOR({'option':'UTF8','string':''},'Standard',false)&ieol=CRLF";
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function showMessage(message, duration) {
+      dialog.classList.remove("hide");
+      dialog.textContent = message;
+
+      await sleep(50);
+      dialog.classList.add("show");
+
+      await sleep(duration);
+
+      dialog.classList.remove("show");
+      dialog.classList.add("hide");
+
+      await sleep(300);
+    }
+
+    async function run() {
+
+      // Let him stare at Metoki for a second before anything happens.
+      await sleep(1600);
+
+      for (const message of messages) {
+        await showMessage(message.text, message.duration);
+      }
+
+      // Dramatic little transition.
+      fade.classList.add("active");
+
+      await sleep(900);
+
+      window.location.replace(cyberChef);
+    }
+
+    run();
+  </script>
 
 </body>
 </html>
